@@ -13,12 +13,10 @@ import { Character } from '../interfaces/character.interface';
 import { CharacterForm } from '../components/character-form/CharacterForm';
 import { DataMassive } from '../interfaces/data-massive.interface';
 
-
-
 const columns: ColumnsInterface[] = [
   { dataKey: 1, label: 'Image', width: "5%" },
-  { dataKey: 2, label: 'Name', width: "15%" }, 
-  { dataKey: 3, label: 'Status', width: "10%" }, 
+  { dataKey: 2, label: 'Name', width: "15%" },
+  { dataKey: 3, label: 'Status', width: "10%" },
   { dataKey: 4, label: 'Specie', width: "10%" },
   { dataKey: 5, label: 'Gender', width: "10%" },
   { dataKey: 6, label: 'Type', width: "10%" },
@@ -42,7 +40,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export function CharacterPage() {
 
-  const {fetchDataCharacters, fetchDataLocation, fetchDataEpisode, insertDataFromRam, getCharacters, deleteCharacter } = useCharacter();
+  const { fetchDataCharacters, fetchDataLocation, fetchDataEpisode, insertDataFromRam, getCharacters, deleteCharacter } = useCharacter();
 
 
   const [loading, setLoading] = useState(false);
@@ -65,7 +63,7 @@ export function CharacterPage() {
   const openCloseModalEdit = () => setShowModalEdit((prev) => !prev);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const openCloseModalDelete = () => setShowModalDelete((prev) => !prev);
-  
+
 
   useEffect(() => {
     getCharactersServerApi();
@@ -73,30 +71,30 @@ export function CharacterPage() {
   }, []);
 
   const massDownload = async () => {
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const [charactersResp, locationsResp, episodesResp] = await Promise.all([
-      fetchDataCharacters(),
-      fetchDataLocation(),
-      fetchDataEpisode(),
-    ]);
+      const [charactersResp, locationsResp, episodesResp] = await Promise.all([
+        fetchDataCharacters(),
+        fetchDataLocation(),
+        fetchDataEpisode(),
+      ]);
 
-    const dataMassive: DataMassive = {
-      characters: charactersResp.results,
-      locations: locationsResp.results,
-      episodes: episodesResp.results,
-    };
+      const dataMassive: DataMassive = {
+        characters: charactersResp.results,
+        locations: locationsResp.results,
+        episodes: episodesResp.results,
+      };
 
-    insertDataFromRam(dataMassive).then((resp: any) => {
-      console.log(resp);
-    });
-  } catch (error) {
-    throw (error);
-  } finally {
-    setLoading(false);
-  }
-};
+      insertDataFromRam(dataMassive).then((resp: any) => {
+        console.log(resp);
+      });
+    } catch (error) {
+      throw (error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getCharactersServerApi = () => {
     setLoading(true);
@@ -143,8 +141,10 @@ export function CharacterPage() {
         toast.success("Character eliminado correctamente", { progress: undefined });
         openCloseModalDelete();
         getCharactersBackend();
+        window.location.reload();
       } else {
         toast.error("Hubo un error al intentar eliminar el character", { progress: undefined });
+        window.location.reload();
       }
     });
   };
@@ -152,9 +152,9 @@ export function CharacterPage() {
 
   return (
     <Grid container>
-      { loading ? ( <Loader /> ) : 
+      {loading ? (<Loader />) :
         (
-          <Grid container width="100%" spacing={5} bgcolor={ "rgb(34, 34, 34)" }>
+          <Grid container width="100%" spacing={5} bgcolor={"rgb(34, 34, 34)"}>
             <Grid size={12}>
               <AppBar position="static" style={{ background: "#263238" }}>
                 <Toolbar color="primary">
@@ -170,31 +170,31 @@ export function CharacterPage() {
                 </Toolbar>
               </AppBar>
             </Grid>
-      
+
             <Grid container size={12} marginInline={20}>
               <Grid size={10} color="white">
                 <Card style={{ color: 'white', background: "#263238" }}>
-                    <CardContent>
-                      <Stack direction="row" marginInline={2}>
-                        <ManageAccounts fontSize='large' />
-                        <Typography variant="h5" sx={{ flexGrow: 1 }} style={{ marginLeft: '10px', marginTop: '4px' }}>
-                          API Rick And Morty
-                        </Typography>
-                        <Button variant='contained' color='success' onClick={openCloseModalAdd}>
-                          <Add />
-                        </Button>
-                      </Stack>
-                    </CardContent>
+                  <CardContent>
+                    <Stack direction="row" marginInline={2}>
+                      <ManageAccounts fontSize='large' />
+                      <Typography variant="h5" sx={{ flexGrow: 1 }} style={{ marginLeft: '10px', marginTop: '4px' }}>
+                        API Rick And Morty
+                      </Typography>
+                      <Button variant='contained' color='success' onClick={openCloseModalAdd}>
+                        <Add />
+                      </Button>
+                    </Stack>
+                  </CardContent>
                 </Card>
               </Grid>
-      
+
               <Grid size={2} color="white" sx={{ display: 'flex', justifyContent: 'center', padding: '10px 0px' }}>
-                  <Button variant="outlined" startIcon={<FileDownload />} onClick={massDownload} sx={{ fontSize: '25px' }}>
-                    MASS DOWNLOAD
-                  </Button>
+                <Button variant="outlined" startIcon={<FileDownload />} onClick={massDownload} sx={{ fontSize: '25px' }}>
+                  MASS DOWNLOAD
+                </Button>
               </Grid>
             </Grid>
-      
+
             <Grid size={12} marginInline={20} marginBottom={20}>
               <TableContainer component={Paper} sx={{ bgcolor: '#263238', color: 'white' }}>
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -206,11 +206,11 @@ export function CharacterPage() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                      {characters.map((c) => (
+                    {characters.map((c) => (
                       <StyledTableRow key={c.id}>
                         <StyledTableCell align="left">
                           <Avatar alt={c.name + " " + c.type} src={c.image}
-                            sx={{ width: 60, height: 60 }} 
+                            sx={{ width: 60, height: 60 }}
                           />
                         </StyledTableCell>
                         <StyledTableCell align="left">{c.name}</StyledTableCell>
@@ -218,10 +218,8 @@ export function CharacterPage() {
                         <StyledTableCell align="left">{c.species}</StyledTableCell>
                         <StyledTableCell align="left">{c.gender}</StyledTableCell>
                         <StyledTableCell align="left">{c.type}</StyledTableCell>
-                        <StyledTableCell align="left">{c.type}</StyledTableCell>
-                        <StyledTableCell align="left">{c.type}</StyledTableCell>
-                        {/* <StyledTableCell align="left">{c.origin}</StyledTableCell> */}
-                        {/* <StyledTableCell align="left">{c.location}</StyledTableCell> */}
+                        <StyledTableCell align="left">{c.origin}</StyledTableCell>
+                        <StyledTableCell align="left">{c.location}</StyledTableCell>
                         <StyledTableCell align="left">
                           <Stack direction="row" spacing={3}>
                             <IconButton><Visibility color='info' onClick={() => openViewCharacter(c)} /></IconButton>
@@ -248,9 +246,9 @@ export function CharacterPage() {
             action={action}
             characterId={null}
             viewCharacterData={viewCharacterData}
-            editCharacterData={null} 
-            openCloseModal={openCloseModalView} 
-            getCharactersBackend={getCharactersBackend} 
+            editCharacterData={null}
+            openCloseModal={openCloseModalView}
+            getCharactersBackend={getCharactersBackend}
           />
         }
       />
@@ -265,11 +263,11 @@ export function CharacterPage() {
               <li><a href="https://mui.com/material-ui/react-select" target='_blank'>Material UI Multiple Select</a></li>
             </ul>
             Todo esto debe ser desarrollado durante el día de hoy y el codigo que implementaran debera subirse a un repositorio
-            de GitHub y establecerlo como publico proporcionandome por privado el link para aceder a el y conectarlo con este 
+            de GitHub y establecerlo como publico proporcionandome por privado el link para aceder a el y conectarlo con este
             frontal de prueba.
             <br /><br />
-            <strong>PD:</strong> La creacion del backend desde cero la pueden hacer desde la pagina 
-            de <a href="https://start.spring.io/" target="_blank">Spring Initializr</a> añadiendo el lenguaje, version y modulos 
+            <strong>PD:</strong> La creacion del backend desde cero la pueden hacer desde la pagina
+            de <a href="https://start.spring.io/" target="_blank">Spring Initializr</a> añadiendo el lenguaje, version y modulos
             a ocupar los cuales ya deben ser capaces de saber que es lo que necesitaran y como lo deben implementar.
           </DialogContentText>
         </DialogContent>
@@ -285,13 +283,13 @@ export function CharacterPage() {
         openCloseModal={openCloseModalAdd}
         title={"Create new user"}
         body={
-          <CharacterForm 
-            action={action} 
+          <CharacterForm
+            action={action}
             characterId={null}
             viewCharacterData={null}
-            editCharacterData={null} 
-            openCloseModal={openCloseModalAdd} 
-            getCharactersBackend={getCharactersBackend} 
+            editCharacterData={null}
+            openCloseModal={openCloseModalAdd}
+            getCharactersBackend={getCharactersBackend}
           />
         }
       />
@@ -301,13 +299,13 @@ export function CharacterPage() {
         openCloseModal={openCloseModalEdit}
         title={"Edit user"}
         body={
-          <CharacterForm 
-            action={action} 
-            characterId={characterId} 
+          <CharacterForm
+            action={action}
+            characterId={characterId}
             viewCharacterData={null}
-            editCharacterData={editCharacterData} 
-            openCloseModal={openCloseModalEdit} 
-            getCharactersBackend={getCharactersBackend} 
+            editCharacterData={editCharacterData}
+            openCloseModal={openCloseModalEdit}
+            getCharactersBackend={getCharactersBackend}
           />
         }
       />

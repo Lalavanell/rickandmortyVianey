@@ -1,14 +1,14 @@
-import { environment } from "../environments/environment prod";
+import { environment } from "../environments/environment";
 import { Character } from "../interfaces/character.interface";
 import { DataMassive } from "../interfaces/data-massive.interface";
 
 const BASE_URL_API = environment.baseUrlApi;
-const BASE_URL_BACKEND = environment.baseUrlApi;
+const BASE_URL_BACKEND = environment.baseUrlBackend;
 
 
 export async function fetchDataCharactersApi() {
   try {
-    const response = await fetch("api/character");
+   const response = await fetch(`${BASE_URL_BACKEND}/api/v1/characters`);
 
     if (response.status !== 200) {
         throw new Error("Hubo un error en la consulta de characters del API!");
@@ -23,7 +23,7 @@ export async function fetchDataCharactersApi() {
 
 export async function fetchDataLocationApi() {
   try {
-    const response = await fetch("api/location");
+    const response = await fetch(`${BASE_URL_BACKEND}/api/v1/locations`);
 
     if (response.status !== 200) {
         throw new Error("Hubo un error en la consulta de locations del API!");
@@ -38,7 +38,7 @@ export async function fetchDataLocationApi() {
 
 export async function fetchDataEpisodeApi() {
   try {
-    const response = await fetch("api/episode");
+    const response = await fetch(`${BASE_URL_BACKEND}/api/v1/episodes`);
 
     if (response.status !== 200) {
         throw new Error("Hubo un error en la consulta de episodes del API!");
@@ -77,32 +77,26 @@ export async function insertDataFromRamApi(dataMassive: DataMassive) {
 }
 
 
-
-
-
 export async function getCharactersApi() {
   try {
-    const url = `${BASE_URL_API}/character`;
+    const url = `${BASE_URL_BACKEND}/api/v1/characters`;
 
-    const headers = { 
-      method: "GET", 
-      headers: {"Content-Type": "application/json"} 
-    };
-
-    const response = await fetch(url, headers);
-
-    if (response.status !== 200) {
-        throw new Error("Hubo un error en la consulta de characters del API!");
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {"Content-Type": "application/json"}
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
     }
 
-    const result = await response.json();
+    const result = await response.json();    
     return result;
   } catch (error) {
+    console.error('💥 Fetch error:', error);
     throw error;
   }
 }
-
-
 
 export async function postCharacterApi(formValue: Character) {
   try {
@@ -116,10 +110,14 @@ export async function postCharacterApi(formValue: Character) {
 
     const response = await fetch(url, params);
 
+    // ✅ Acepta tanto 200 como 400 (pero maneja el 400 diferente)
+    if (response.status === 400) {
+      const errorData = await response.json();
+      throw new Error(errorData.message); // ← Muestra el mensaje del backend
+    }
+
     if (response.status !== 200) {
-      throw new Error(
-        "Hubo un error al guardar el character!"
-      );
+      throw new Error("Hubo un error al guardar el character!");
     }
 
     const result = await response.json();

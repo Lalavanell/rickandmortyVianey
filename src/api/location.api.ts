@@ -1,6 +1,7 @@
 import { environment } from "../environments/environment prod";
 
 const BASE_URL_API = environment.baseUrlApi;
+const BASE_URL_BACKEND = environment.baseUrlBackend;
 
 
 

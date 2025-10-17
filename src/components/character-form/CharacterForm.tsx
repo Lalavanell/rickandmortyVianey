@@ -27,7 +27,7 @@ const names = [
 
 export function CharacterForm({ action, characterId, viewCharacterData, editCharacterData, openCloseModal, getCharactersBackend }: CharacterProps) {
 
-    const { postCharacter, putCharacter } = useCharacter();
+  const { postCharacter, putCharacter } = useCharacter();
 
   const [nameButton, setNameButton] = useState("");
 
@@ -80,41 +80,43 @@ export function CharacterForm({ action, characterId, viewCharacterData, editChar
 
   const formik = useFormik<Character>({
     initialValues: {
-        id: null,
-        image: '',
-        name: '',
-        status: '',
-        species: '',
-        type: '',
-        gender: '',
-        origin: '',
-        location: '',
-        episode: [],
+      id: null,
+      image: '',
+      name: '',
+      status: '',
+      species: '',
+      type: '',
+      gender: '',
+      origin: '',
+      location: '',
+      episode: [],
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(characterId)
-      console.log('Valores enviados', values);
-      if(action === "edit") {
+      if (action === "edit") {
         putCharacter(values).then((response) => {
           if (response.estatus === 1) {
-              toast.success("Character editado correctamente", { progress: undefined });
-              openCloseModal();
-              getCharactersBackend();
+            toast.success("Character editado correctamente", { progress: undefined });
+            openCloseModal();
+            getCharactersBackend();
+            window.location.reload();
           } else {
-              toast.error("Hubo un error al intentar editar el character", { progress: undefined });
+            toast.error("Hubo un error al intentar editar el character", { progress: undefined });
+            window.location.reload();
           }
         });
       } else {
         postCharacter(values).then((response) => {
           if (response.estatus === 200) {
-              toast.success("Character guardado correctamente", { progress: undefined });
-              openCloseModal();
-              getCharactersBackend();
+            toast.success("Character guardado correctamente", { progress: undefined });
+            openCloseModal();
+            getCharactersBackend();
+            window.location.reload();
           } else {
-              toast.error("Hubo un error al intentar guardar el character", { progress: undefined });
+            toast.error("Hubo un error al intentar guardar el character", { progress: undefined });
+            window.location.reload();
           }
-        }); 
+        });
       }
     },
   });
@@ -194,8 +196,9 @@ export function CharacterForm({ action, characterId, viewCharacterData, editChar
             error={formik.touched.status && Boolean(formik.errors.status)}
             helperText={formik.touched.status && formik.errors.status}
           >
-            <MenuItem value="male">Male</MenuItem>
-            <MenuItem value="female">Female</MenuItem>
+            <MenuItem value="Alive">Alive</MenuItem>
+            <MenuItem value="Dead">Dead</MenuItem>
+            <MenuItem value="unknown">Unknown</MenuItem>
           </TextField>
         </Grid>
 
@@ -212,8 +215,12 @@ export function CharacterForm({ action, characterId, viewCharacterData, editChar
             error={formik.touched.species && Boolean(formik.errors.species)}
             helperText={formik.touched.species && formik.errors.species}
           >
-            <MenuItem value="male">Male</MenuItem>
-            <MenuItem value="female">Female</MenuItem>
+            <MenuItem value="Human">Human</MenuItem>
+            <MenuItem value="Alien">Alien</MenuItem>
+            <MenuItem value="Robot">Robot</MenuItem>
+            <MenuItem value="Animal">Animal</MenuItem>
+            <MenuItem value="Mythological">Mythological</MenuItem>
+            <MenuItem value="unknown">Unknown</MenuItem>
           </TextField>
         </Grid>
 
@@ -266,8 +273,7 @@ export function CharacterForm({ action, characterId, viewCharacterData, editChar
         <Grid size={{ xs: 12, md: 4 }}>
           <TextField
             fullWidth
-            select
-            label="Location"
+            label="Location"           
             name="location"
             disabled={viewCharacterData != null}
             value={formik.values.location}
@@ -275,13 +281,11 @@ export function CharacterForm({ action, characterId, viewCharacterData, editChar
             onBlur={formik.handleBlur}
             error={formik.touched.location && Boolean(formik.errors.location)}
             helperText={formik.touched.location && formik.errors.location}
-          >
-            <MenuItem value="male">Male</MenuItem>
-            <MenuItem value="female">Female</MenuItem>
-          </TextField>
+            placeholder="Ej: Earth, Mars, Space Station, etc."
+          />
         </Grid>
 
-         <Grid size={{ xs: 12, md: 12 }}>
+        <Grid size={{ xs: 12, md: 12 }}>
           <FormControl sx={{ m: 1, width: '100%' }}>
             <InputLabel id="demo-multiple-name-label">Episode</InputLabel>
             <Select
@@ -305,7 +309,7 @@ export function CharacterForm({ action, characterId, viewCharacterData, editChar
             </Select>
           </FormControl>
         </Grid>
-        
+
         <Grid size={{ xs: 12 }} display="flex" justifyContent="end">
           {
             viewCharacterData == null && (

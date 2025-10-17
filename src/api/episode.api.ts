@@ -1,6 +1,9 @@
 import { environment } from "../environments/environment prod";
+import { Character } from "../interfaces/character.interface";
+import { DataMassive } from "../interfaces/data-massive.interface";
 
 const BASE_URL_API = environment.baseUrlApi;
+const BASE_URL_BACKEND = environment.baseUrlBackend;
 
 
 
